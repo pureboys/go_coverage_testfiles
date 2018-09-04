@@ -10,6 +10,9 @@ type Test struct {
 var tests = []Test{
     {-1, "negative"},
     {5, "small"},
+    {0, "zero"},
+    {99, "big"},
+    {999, "huge"},
 }
 
 func TestSize(t *testing.T) {
