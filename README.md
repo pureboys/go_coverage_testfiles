@@ -2,29 +2,25 @@
 
 The following document goes through running code coverage for Golang,
  automation with Jenkins and integration with SonarQube. As you can read in
- [The Go Blog](https://blog.golang.org/cover) - The code coverage tool to be
+ [The Go Blog][1] - The code coverage tool to be
  used for Golang is a built-in tool.
 
 This document is separated into 3 parts:
 
-- **Manual Coverage** - section will present you the supported method of
+- **Manual Coverage** - will present you the supported method of
      running code coverage on Golang.
-- **Jenkins Automation** - section will introduce the basic steps in order to
+- **Jenkins Automation** - will introduce the basic steps in order to
      automate the coverage process using the web UI.
-- **SonarQube Integration** - section will teach you how to publish your
+- **SonarQube Integration** - will teach you how to publish your
      results to SonarQube using the Jenkins web UI as well as manually.
 
  ------------------------------------------------------------------------------
 
 ## Manual Coverage
 
-### Prerequisites
-
-- Golang 1.10+
-
 > ⚔ Note: The release of Go 1.2 introduces the new built-in tool for
-     test coverage. It is strongly recommend reading
-     [The Go Blog](https://blog.golang.org/cover) in order to understand
+     test coverage. It is strongly recommended reading
+     [The Go Blog][1] in order to understand
      how it works.
 
 ### Running code coverage manually
@@ -49,7 +45,7 @@ This document is separated into 3 parts:
 
 #### Example
 
-The following example includes small function and test file and a correction of
+The following example includes a small function and test file and a correction of
  the tests according to the results we received from coverage results. Let's
  assume you have the following 2 Golang files:
 
@@ -108,7 +104,7 @@ func TestSize(t *testing.T) {
      TestSize function as described here. Put the file in the same package as
      the one being tested. The file will be excluded from regular package
      builds but will be included when the “go test” command is run. For more
-     detail about testing you can see [here](https://golang.org/pkg/testing/)
+     detail about testing, you can see [here](https://golang.org/pkg/testing/)
 
 1. run the command `go test -cover`
 
@@ -217,18 +213,10 @@ This has been a better result than the previous one!
   > ⚔ Note: you could either use a provisioning system such as [docker daemon](https://docs.docker.com/engine/reference/commandline/dockerd/),
 [OpenShift](https://github.com/openshift), [OpenStack](https://github.com/openstack), [Kubernetes](https://kubernetes.io/), etc. or use a local environment.
 
-> ⚔ Note: notice there are several methods and tools to manage CI and
-     automation such as [Gump](https://gump.apache.org/),
-     [Hudson](http://hudson-ci.org/),
-     [Bamboo](https://www.atlassian.com/software/bamboo),
-     [Travis](https://travis-ci.org/) and more.
-     We will only introduce and support Jenkins for this end as it is the
-     standardized CI tool in RedHat.
-
-### Automating using the web UI and Uploading coverage results to Jenkins
+### Automating and Uploading coverage results to Jenkins
 
 Continuing from the previous chapter, assuming our project files are held on
- a remote github repository **[https://github.com/shay6/go_coverage_testfiles](https://github.com/shay6/go_coverage_testfiles)**.
+ a remote GitHub repository **[https://github.com/shay6/go_coverage_testfiles](https://github.com/shay6/go_coverage_testfiles)**.
 
 #### Example
 
@@ -257,9 +245,6 @@ For that purpose, we will use the [Jenkins Cobertura plugin](https://wiki.jenkin
  Paste the following deployment script onto the bash text editor.
 
 ```shell
-# Install dependencies
-yum install -y wget
-
 # Creating path for Go code
 mkdir -p gocode/src/github.com/
 cd gocode/src/github.com/
@@ -268,9 +253,7 @@ cd gocode/src/github.com/
 git clone https://github.com/shay6/go_coverage_testfiles.git
 
 # Download, install Golang and Define Env variables
-wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
-rm go1.10.3.linux-amd64.tar.gz
+dnf install -y golang
 export PATH=/usr/local/go/bin:$PATH
 export PATH=${WORKSPACE}/gocode/bin:$PATH
 export GOPATH=${WORKSPACE}/gocode
@@ -284,16 +267,6 @@ go get github.com/axw/gocov/gocov
 go get github.com/AlekSi/gocov-xml
 gocov convert cover.out | gocov-xml > coverage.xml
 ```
-
-> ⚔ Note: We are installing Golang using wget instead of yum because we
-         want to install Go 1.10 release and it's not uploaded to RHEL
-         subscription manager repository.
-
-> ⚔ Note: the **-y** parameter in the yum command approves installation
-         prompts which is mandatory for automation purposes.
-
-> ⚔ Note: the **${WORKSPACE}** environment variable is used by Jenkins in
-         order to point to the current build's working directory.
 
 ![input your script](./res/Shell_Script.png)
 
@@ -512,3 +485,5 @@ As a continuation of the previous examples and assuming our generated
     **And your results have been published! (:**
 
 ------------------------------------------------------------------------------
+
+[1]: https://blog.golang.org/cover
