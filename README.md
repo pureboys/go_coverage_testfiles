@@ -19,9 +19,9 @@ This document is separated into 3 parts:
 ## Manual Coverage
 
 > ⚔ Note: The release of Go 1.2 introduces the new built-in tool for
-     test coverage. It is strongly recommended reading
-     [The Go Blog][1] in order to understand
-     how it works.
+test coverage. It is strongly recommended reading
+[The Go Blog][1] in order to understand
+how it works.
 
 ### Running code coverage manually
 
@@ -51,7 +51,7 @@ The following example includes a small function and test file and a correction o
 
 - **size.go**
 
-```
+```Go
 package size
 
 func Size(a int) string {
@@ -73,7 +73,7 @@ func Size(a int) string {
 
 - **size_test.go**
 
-```
+```Go
 package size
 
 import "testing"
@@ -99,16 +99,15 @@ func TestSize(t *testing.T) {
 
 ```
 
-
 > ⚔ Note: You need to create a file whose name ends _test.go that contains the
-     TestSize function as described here. Put the file in the same package as
-     the one being tested. The file will be excluded from regular package
-     builds but will be included when the “go test” command is run. For more
-     detail about testing, you can see [here](https://golang.org/pkg/testing/)
+TestSize function as described here. Put the file in the same package as
+the one being tested. The file will be excluded from regular package
+builds but will be included when the “go test” command is run. For more
+detail about testing, you can see [here](https://golang.org/pkg/testing/)
 
 1. run the command `go test -cover`
 
-```
+```Go
 PASS
 coverage: 42.9% of statements
 ok      size    0.026s
@@ -121,8 +120,7 @@ Notice that the coverage is 42.9%, which isn't very good. Before we ask how to
  the distribution, to rewrite the source code before compilation. Here's what
  the rewritten Size function looks like.
 
-
-  ```
+```Go
     func Size(a int) string {
         GoCover.Count[0] = 1
         switch {
@@ -146,7 +144,7 @@ Notice that the coverage is 42.9%, which isn't very good. Before we ask how to
         return "enormous"
     }
 
-  ```
+```
 
 Each executable section of the program is annotated with an assignment
  statement that, when executed, records that that section ran. When the test
@@ -160,20 +158,21 @@ A big advantage of this source-level approach to test coverage is that it's
 The go test command accepts a -covermode flag to set the coverage mode to one
  of three settings:
 
-  - set: did each statement run?
-  - count: how many times did each statement run?
-  - atomic: like count, but counts precisely in parallel programs
+- set: did each statement run?
+- count: how many times did each statement run?
+- atomic: like count, but counts precisely in parallel programs
 
 we can simply use it by running the following command
 
-```
+```Go
 go test -covermode=count -coverprofile=count.out
 
 ```
-2. Now in order to raise the coverage number we can add some test cases
-    in our var "tests" in size_test.go file like that:
 
-```
+2. Now in order to raise the coverage number we can add some test cases
+   in our var "tests" in size_test.go file like that:
+
+```Go
 var tests = []Test{
     {-1, "negative"},
     {5, "small"},
@@ -185,7 +184,7 @@ var tests = []Test{
 
 3. Then run again "go test -cover" and the output should look like:
 
-```
+```Go
 PASS
 coverage: 85.7% of statements
 ok      size    0.001s
@@ -194,8 +193,7 @@ ok      size    0.001s
 
 This has been a better result than the previous one!
 
-
---------------------------------------------------------------------------------
+------------------------------------------------------------------------------;
 
 ## Jenkins Automation
 
@@ -211,7 +209,8 @@ This has been a better result than the previous one!
   - git
 
   > ⚔ Note: you could either use a provisioning system such as [docker daemon](https://docs.docker.com/engine/reference/commandline/dockerd/),
-[OpenShift](https://github.com/openshift), [OpenStack](https://github.com/openstack), [Kubernetes](https://kubernetes.io/), etc. or use a local environment.
+[OpenShift](https://github.com/openshift), [OpenStack](https://github.com/openstack),
+[Kubernetes](https://kubernetes.io/), etc. or use a local environment.
 
 ### Automating and Uploading coverage results to Jenkins
 
@@ -235,7 +234,7 @@ Continuing from the previous chapter, assuming our project files are held on
 ![create bash build step](./res/Build_step_shell.png)
 
 4. Sometimes it's useful to have your coverage results uploaded to your
-    Jenkins job which could ease troubleshooting procceses in case of large
+    Jenkins job which could ease troubleshooting processes in case of large
     scale development efforts which might require several independent coverage
     jobs.
 
@@ -282,13 +281,12 @@ Let's have a look for a moment at our script, we can see it's divided into
    to publish it on Jenkins using Cobertura.
 
 > ⚔ Note: in most cases, each of these parts will be more complicated
-       and it's a good habit to break each part into it's own bash build
-       step to ease troubleshooting.
+and it's a good habit to break each part into it's own bash build
+step to ease troubleshooting.
 
 > ⚔ Note: with cover.out file we can publish the report to SonarQube
-       and with coverage.xml file we can publish it in Jenkins
-       using Cobertura.
-
+and with coverage.xml file we can publish it in Jenkins
+using Cobertura.
 
 5. In the job's configuration screen, add a "post-build action". upload the
     "coverage.xml" file which we created with gocov-xml.
@@ -298,7 +296,7 @@ Let's have a look for a moment at our script, we can see it's divided into
 6. Input a relative glob path to the generated report path and save the job
     in order to push the "coverage.xml" file which we created with gocov-xml.
 
-```
+```Jenkins
 **/gocode/src/github.com/go_coverage_testfiles/coverage.xml
 ```
 
@@ -317,9 +315,7 @@ Let's have a look for a moment at our script, we can see it's divided into
 **And we're done!** on the next chapter you will learn how to publish your
    generated results into SonarQube to view them.
 
-
-
---------------------------------------------------------------------------------
+------------------------------------------------------------------------------;
 
 ## SonarQube Integration
 
@@ -330,22 +326,22 @@ Let's have a look for a moment at our script, we can see it's divided into
 - [SonarQube Runner v2.8+](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner)
 
 > ⚔ Note: in order to deploy a SonarQube instance, you can refer to the
-     [Installing Sonar Server v5.6.3](https://docs.engineering.redhat.com/display/CentralCI/Installing+Sonar+Server+v5.6.3)
-     document or use the Central-CI instances,
-     see [Central CI SonarQube Instances](https://docs.engineering.redhat.com/display/CentralCI/Central+CI+SonarQube+Instances) for more information.
+[Installing Sonar Server v5.6.3](https://docs.engineering.redhat.com/display/CentralCI/Installing+Sonar+Server+v5.6.3)
+document or use the Central-CI instances,
+see [Central CI SonarQube Instances](https://docs.engineering.redhat.com/display/CentralCI/Central+CI+SonarQube+Instances) for more information.
 
 > ⚔ Note: for Jenkins Sonar plugin configuration see
-     [Analyzing with SonarQube Scanner for Jenkins](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Jenkins) for details.
+[Analysing with SonarQube Scanner for Jenkins](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Jenkins) for details.
 
 ### Integrating SonarQube through the Jenkins web UI
 
 As a direct continuation of the previous chapter, building on the same Jenkins
- job, we'll now add the SonarQube integration.
+job, we'll now add the SonarQube integration.
 
 #### Example
 
 1. In the job configuration, choose "Add build step"
-    and "Execute SonarQube Scanner"
+and "Execute SonarQube Scanner"
 
 ![configure project](./res/configure_project.png)
 ![Build step SonarScanner](./res/Build_step_SonarScanner.png)
@@ -380,20 +376,20 @@ sonar.login=<your token>
 ```
 
 > ⚔ Note: With cover.out file we can publish the report to SonarQube and
-     with coverage.xml file we can publish it in Jenkins using Cobertura.
+with coverage.xml file we can publish it in Jenkins using Cobertura.
 
 > ⚔ Note: For generating your token see the instruction
-     [in SonarQube official site](https://docs.sonarqube.org/display/SONAR/User+Token)
+[in SonarQube official site](https://docs.sonarqube.org/display/SONAR/User+Token)
 
 > ⚔ Note: for further details on SonarQube analysis parameters,
-     see [Analysis Parameters](https://docs.sonarqube.org/display/SONAR/Analysis+Parameters).
+see [Analysis Parameters](https://docs.sonarqube.org/display/SONAR/Analysis+Parameters).
 
 3. Run a build again to view the reported results
 
 ![Jenkins build now](./res/Jenkins_build_now.png)
 
- You'd now be able to see a link to the results on the job's page which will
-  lead you to the SonarQube dashboard.
+You'd now be able to see a link to the results on the job's page which will
+lead you to the SonarQube dashboard.
 
   ![Sonar report link](./res/Sonar_report_link.png)
 
@@ -405,24 +401,24 @@ sonar.login=<your token>
 ### Publishing to SonarQube manually
 
 Sometimes it's useful to be able to publish our coverage report to
- SonarQube manually. Although it is **not a recommended** methodology,
- we will elaborate upon the needed steps for those ends.
+SonarQube manually. Although it is **not a recommended** methodology,
+we will elaborate upon the needed steps for those ends.
 
 > ⚔ Note: in this section we assume you are running an up-to-date RedHat
-     distribution(Fedora, CentOS, RHEL)
+distribution(Fedora, CentOS, RHEL)
 
 #### Example
 
 As a continuation of the previous examples and assuming our generated
- coverage report is located in our project folder.
+coverage report is located in our project folder.
 
 1. Follow the instruction of SonarQube documentation and install
-    [v3.2+ of SonarScanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner),
-    which is the client agent for the SonarQube server. In addition add the
-    <install_directory>/bin directory to your PATH.
+[v3.2+ of SonarScanner](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner),
+ which is the client agent for the SonarQube server. In addition add the
+<install_directory>/bin directory to your PATH.
 
 2. Now, in addition to our previous scanning parameters while publishing to
-    sonar through the Jenkins UI:
+sonar through the Jenkins UI:
 
     ```shell
     # projectKey (string): SonarQube project identification key (unique)
@@ -465,7 +461,7 @@ As a continuation of the previous examples and assuming our generated
     ```
 
 3. Finally, you should be able to see a success prompt with a link to your
-    published coverage report dashboard such as this one:
+published coverage report dashboard such as this one:
 
     ```shell
     INFO: Analysis report uploaded in 522ms
@@ -484,129 +480,130 @@ As a continuation of the previous examples and assuming our generated
 
     **And your results have been published! (:**
 
--------------------------------------------------------------------------------
+------------------------------------------------------------------------------;
 
 #### JJB Example
-```
-- job:
-    name: golang_coverage
 
-    #######################################################
-    ############## SonarQube Parameters ###################
-    #######################################################
+      ```JJB
+      - job:
+          name: golang_coverage
 
-    # sonarqube project parameters, set before build
-    parameters:
-      - string:
-          name: SONAR_KEY
-          default: golang_coverage
-          description: "SonarQube unique project key"
-      - string:
-          name: SONAR_NAME
-          default: Testfiles Golang Analysis
-          description: "SonarQube project name"
-      - string:
-          name: SONAR_PROJECT_VERSION
-          default: "1.0"
-          description: "SonarQube project version"
+          #######################################################
+          ############## SonarQube Parameters ###################
+          #######################################################
 
-    #######################################################
-    ############### Logging Aggregation ###################
-    #######################################################
+          # sonarqube project parameters, set before build
+          parameters:
+            - string:
+                name: SONAR_KEY
+                default: golang_coverage
+                description: "SonarQube unique project key"
+            - string:
+                name: SONAR_NAME
+                default: Testfiles Golang Analysis
+                description: "SonarQube project name"
+            - string:
+                name: SONAR_PROJECT_VERSION
+                default: "1.0"
+                description: "SonarQube project version"
 
-    # define how many days to kee build information
-    properties:
-      - build-discarder:
-          days-to-keep: 60
-          num-to-keep: 200
-          artifact-days-to-keep: 60
-          artifact-num-to-keep: 200
+          #######################################################
+          ############### Logging Aggregation ###################
+          #######################################################
 
-    #######################################################
-    ################### Slave Image #######################
-    #######################################################
+          # define how many days to kee build information
+          properties:
+            - build-discarder:
+                days-to-keep: 60
+                num-to-keep: 200
+                artifact-days-to-keep: 60
+                artifact-num-to-keep: 200
 
-    node: ssh_slave
+          #######################################################
+          ################### Slave Image #######################
+          #######################################################
 
-    #######################################################
-    ################ Git Trigger Config ###################
-    #######################################################
+          node: ssh_slave
 
-    # git repo to follow, skip-tag to not require auth
-    scm:
-      - git:
-          url: https://github.com/shay6/go_coverage_testfiles.git
-          basedir: ${WORKSPACE}/gocode/src/github.com/
-          skip-tag: true
+          #######################################################
+          ################ Git Trigger Config ###################
+          #######################################################
 
-    #######################################################
-    ################### Build Steps #######################
-    #######################################################
+          # git repo to follow, skip-tag to not require auth
+          scm:
+            - git:
+                url: https://github.com/shay6/go_coverage_testfiles.git
+                basedir: ${WORKSPACE}/gocode/src/github.com/
+                skip-tag: true
 
-    builders:
+          #######################################################
+          ################### Build Steps #######################
+          #######################################################
 
-      # project deployment script goes here
-      - shell: |
-          # Creating path for Golang code
-          mkdir -p gocode/src/github.com/
-          cd gocode/src/github.com/
+          builders:
 
-          # Download, install Go and Define Env variables
-          dnf install -y golang
-          export PATH=/usr/bin/go/bin:$PATH
-          export PATH=${WORKSPACE}/gocode/bin:$PATH
-          export GOPATH=${WORKSPACE}/gocode
+            # project deployment script goes here
+            - shell: |
+                # Creating path for Golang code
+                mkdir -p gocode/src/github.com/
+                cd gocode/src/github.com/
 
-          # Generating Coverage report
-          go test -coverprofile=cover.out
+                # Download, install Go and Define Env variables
+                dnf install -y golang
+                export PATH=/usr/bin/go/bin:$PATH
+                export PATH=${WORKSPACE}/gocode/bin:$PATH
+                export GOPATH=${WORKSPACE}/gocode
 
-          # Download tool and convert report to XML file
-          go get github.com/axw/gocov/gocov
-          go get github.com/AlekSi/gocov-xml
-          gocov convert cover.out | gocov-xml > coverage.xml
+                # Generating Coverage report
+                go test -coverprofile=cover.out
 
-      # sonar runner parameters, set sources and baseDir to project home
-      # projectKey (string): SonarQube project identification key (unique)
-      # projectName (string): SonarQube project name (NOT unique)
-      # projectVersion (string): SonarQube project version (unique)
-      # sources (string): source code home directory
-      # projectBaseDir (string): project home directory (same as sources)
-      # language (string): project language(ruby)
-      # inclusions (string): file inclusion pattern
-      # exclusions (string): file exclusion pattern
-      # login (string): SonarQube server user name
-      # password (string): SonarQube server user password
-      - sonar:
-          sonar-name: sonarqube_prod
-          properties: |
-            sonar.projectKey=$SONAR_KEY
-            sonar.projectName=$SONAR_NAME
-            sonar.projectVersion=$SONAR_PROJECT_VERSION
-            sonar.sources=${WORKSPACE}/gocode/src/github.com/
-            sonar.projectBaseDir=${WORKSPACE}/gocode/src/github.com/
-            sonar.go.coverage.reportPaths=cover.out
-            sonar.language=go
-            sonar.inclusions=**/size.go
-            sonar.exclusions=**/*_test.go
-            sonar.login=<your_token>
-            sonar.ws.timeout=180
+                # Download tool and convert report to XML file
+                go get github.com/axw/gocov/gocov
+                go get github.com/AlekSi/gocov-xml
+                gocov convert cover.out | gocov-xml > coverage.xml
+
+            # sonar runner parameters, set sources and baseDir to project home
+            # projectKey (string): SonarQube project identification key (unique)
+            # projectName (string): SonarQube project name (NOT unique)
+            # projectVersion (string): SonarQube project version (unique)
+            # sources (string): source code home directory
+            # projectBaseDir (string): project home directory (same as sources)
+            # language (string): project language(ruby)
+            # inclusions (string): file inclusion pattern
+            # exclusions (string): file exclusion pattern
+            # login (string): SonarQube server user name
+            # password (string): SonarQube server user password
+            - sonar:
+                sonar-name: sonarqube_prod
+                properties: |
+                  sonar.projectKey=$SONAR_KEY
+                  sonar.projectName=$SONAR_NAME
+                  sonar.projectVersion=$SONAR_PROJECT_VERSION
+                  sonar.sources=${WORKSPACE}/gocode/src/github.com/
+                  sonar.projectBaseDir=${WORKSPACE}/gocode/src/github.com/
+                  sonar.go.coverage.reportPaths=cover.out
+                  sonar.language=go
+                  sonar.inclusions=**/size.go
+                  sonar.exclusions=**/*_test.go
+                  sonar.login=<your_token>
+                  sonar.ws.timeout=180
 
 
-      ########################################################
-      ################### Report Publisher ####################
-      #########################################################
+            ########################################################
+            ################### Report Publisher ####################
+            #########################################################
 
-      # publishes aggregated results to Jenkins
-    publishers:
-      - cobertura:
-          report-file: "**/gocode/src/github.com/coverage.xml"
-          targets:
-            - line:
-                healthy: 0
-                unhealthy: 0
-                failing: 0
+            # publishes aggregated results to Jenkins
+          publishers:
+            - cobertura:
+                report-file: "**/gocode/src/github.com/coverage.xml"
+                targets:
+                  - line:
+                      healthy: 0
+                      unhealthy: 0
+                      failing: 0
 
-```
+```Jenkinsfile
 
 #### Jenkinsfile Example
 
@@ -618,22 +615,22 @@ As a continuation of the previous examples and assuming our generated
           stages {
               stage('Deploy and Analyse') {
                   steps {
-                  // clone project and install dependencies
-                  // run tests with coverage and export results to xml
-      	    sh '''
-      	    mkdir -p gocode/src/github.com/
-      	    cd gocode/src/github.com/
-      	    git clone https://github.com/shay6/go_coverage_testfiles.git
-      	    dnf install -y golang
-      	    export PATH=/usr/local/go/bin:$PATH
-      	    export PATH=${WORKSPACE}/gocode/bin:$PATH
-      	    export GOPATH=${WORKSPACE}/gocode
-      	    cd go_coverage_testfiles/
-      	    go test -coverprofile=cover.out
-      	    go get github.com/axw/gocov/gocov
-      	    go get github.com/AlekSi/gocov-xml
-      	    gocov convert cover.out | gocov-xml > coverage.xml
-      	    '''
+                    // clone project and install dependencies
+                    // run tests with coverage and export results to xml
+                    sh '''
+                    mkdir -p gocode/src/github.com/
+                    cd gocode/src/github.com/
+                    git clone https://github.com/shay6/go_coverage_testfiles.git
+                    dnf install -y golang
+                    export PATH=/usr/local/go/bin:$PATH
+                    export PATH=${WORKSPACE}/gocode/bin:$PATH
+                    export GOPATH=${WORKSPACE}/gocode
+                    cd go_coverage_testfiles/
+                    go test -coverprofile=cover.out
+                    go get github.com/axw/gocov/gocov
+                    go get github.com/AlekSi/gocov-xml
+                    gocov convert cover.out | gocov-xml > coverage.xml
+                    '''
                   }
               }
               stage('Report') {
@@ -654,31 +651,30 @@ As a continuation of the previous examples and assuming our generated
                   password (string): SonarQube server user password
                    */
                   steps {
-      	      writeFile file: "${pwd()}/sonar-project.properties", text: """
-      	      sonar.projectKey=test-files_1_0_golang_coverage_analysis
-      	      sonar.projectName=go-coverage
-      	      sonar.projectVersion=1.0
-      	      sonar.sources=${pwd()}/gocode/src/github.com/go_coverage_testfiles/
-      	      sonar.projectBaseDir=${pwd()}/gocode/src/github.com/go_coverage_testfiles/
-      	      sonar.go.coverage.reportPaths=cover.out
-      	      sonar.language=go
-      	      sonar.inclusions=**/*.go
-      	      sonar.exclusions=**/*_test.go
-      	      sonar.login=<your_token>
-                    sonar.ws.timeout=180
-      	      """
+                      writeFile file: "${pwd()}/sonar-project.properties", text: """
+                      sonar.projectKey=test-files_1_0_golang_coverage_analysis
+                      sonar.projectName=go-coverage
+                      sonar.projectVersion=1.0
+                      sonar.sources=${pwd()}/gocode/src/github.com/go_coverage_testfiles/
+                      sonar.projectBaseDir=${pwd()}/gocode/src/github.com/go_coverage_testfiles/
+                      sonar.go.coverage.reportPaths=cover.out
+                      sonar.language=go
+                      sonar.inclusions=**/*.go
+                      sonar.exclusions=**/*_test.go
+                      sonar.login=<your_token>
+                      sonar.ws.timeout=180
+                      """
 
                     // initite pre-configured sonar scanner tool on project
                     // 'soanrqube_prod' is our cnfigured tool name, see yours
                     // in the Jenkins tool configuration
                     withSonarQubeEnv('sonarqube_prod') {
                       sh "${tool 'sonar-scanner-2.8'}/bin/sonar-scanner"
-      	          }
+                  }
                }
             }
          }
       }
-
 
 ------------------------------------------------------------------------------
 
